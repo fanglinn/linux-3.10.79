@@ -6,6 +6,17 @@
 *.ko
 *.obj
 *.elf
+.config.old
+.tmp_vmlinux*
+.version
+arch/arm/include/generated/*
+arch/arm/kernel/asm-offsets.s
+include/config/
+include/generated/
+kernel/bounds.s
+scripts/mod/devicetable-offsets.s
+vmlinux
+
 
 # Linker output
 *.ilk
