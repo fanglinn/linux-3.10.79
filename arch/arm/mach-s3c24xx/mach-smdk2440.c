@@ -159,7 +159,7 @@ static struct platform_device *smdk2440_devices[] __initdata = {
 static void __init smdk2440_map_io(void)
 {
 	s3c24xx_init_io(smdk2440_iodesc, ARRAY_SIZE(smdk2440_iodesc));
-	s3c24xx_init_clocks(16934400);
+	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdk2440_uartcfgs, ARRAY_SIZE(smdk2440_uartcfgs));
 	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
 }
@@ -173,9 +173,16 @@ static void __init smdk2440_machine_init(void)
 	smdk_machine_init();
 }
 
+/* add by Flinn */
+static const char *const smdk2440_dt_compat[] __initconst = {
+        "samsung,smdk2440", 
+        NULL
+};
+
 MACHINE_START(S3C2440, "SMDK2440")
 	/* Maintainer: Ben Dooks <ben-linux@fluff.org> */
 	.atag_offset	= 0x100,
+	.dt_compat      = smdk2440_dt_compat,   /* add by Flinn */
 
 	.init_irq	= s3c2440_init_irq,
 	.map_io		= smdk2440_map_io,
