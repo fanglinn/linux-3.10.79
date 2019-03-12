@@ -31,6 +31,8 @@ scripts/mod/devicetable-offsets.s
 vmlinux
 .config.old
 >>>>>>> 570576b5ff537b75b4776f7c4ae8b7b50b6d9cde
+arch/arm/boot/dts/.mini2440.dtb*
+
 
 # Linker output
 *.ilk
