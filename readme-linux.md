@@ -175,6 +175,10 @@ static struct platform_device *smdk2440_devices[] __initdata = {
 set bootargs noinitrd root=/dev/nfs nfsroot=192.168.10.119:/work/rootfs  ip=192.168.10.123:192.168.10.119:192.168.10.1:255.255.255.0::eth0:off init=/linuxrc console=ttySAC0,115200
 ```
 
+192.168.10.119 : serverip
+
+192.168.10.123 : board ip
+
 启动后：
 
 ```bash
@@ -190,6 +194,18 @@ set bootargs noinitrd root=/dev/nfs nfsroot=192.168.10.119:/work/rootfs  ip=192.
 [    1.169073] Freeing unused kernel memory: 144K (c0495000 - c04b9000)
 
 Please press Enter to activate this console.
+```
+
+
+
+设备树load
+
+```bash
+tftp 32000000 mini2440.dtb
+nand erase 0x00040000 0x20000   # nand erase.part device_tree
+nand write.jffs2 32000000 0x40000 0x20000  # nand write.jffs2 30000000 device_tree
+or
+tftp 32000000 mini2440.dtb;nand erase 0x00040000 0x20000;nand write.jffs2 32000000 0x40000 0x20000
 ```
 
 
@@ -1364,3 +1380,16 @@ File Systems
 
 
 
+## 驱动
+
+1. rmmod: chdir(3.10.79-mini2440): No such file or directory
+
+   使用nfs文件系统时，需要在rootfs/lib/建立：
+
+   mkdir -p lib/modules/`uname -r`
+
+   cp xxx.ko /lib/modules/`uname -r`/
+
+   
+
+2. 
