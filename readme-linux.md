@@ -66,9 +66,6 @@ static void __init smdk2440_init_time(void)
     s3c2440_init_clocks(12000000);    
 }
 
-static struct platform_device *smdk2440_devices[] __initdata = {
-    &s3c_device_nand,
-};
 
 /* add by Flinn */
 static const char *const smdk2440_dt_compat[] __initconst = {
@@ -126,7 +123,74 @@ Kernel Features
 
 
 
+### dm9000
+
+vim arch/arm/mach-s3c24xx/mach-smdk2440.c
+
+```c
+#include <linux/dm9000.h>
+...
+#define MACH_SMDK2440_DM9K_BASE (S3C2410_CS4 + 0x300)
+
+static struct resource smdk2440_dm9k_resource[] = {
+        [0] = DEFINE_RES_MEM(MACH_SMDK2440_DM9K_BASE, 4),
+        [1] = DEFINE_RES_MEM(MACH_SMDK2440_DM9K_BASE + 4, 4),
+        [2] = DEFINE_RES_NAMED(IRQ_EINT7, 1, NULL, IORESOURCE_IRQ \
+                                                | IORESOURCE_IRQ_HIGHEDGE),
+};
+
+
+/*
+ * The DM9000 has no eeprom, and it's MAC address is set by
+ * the bootloader before starting the kernel.
+ */
+static struct dm9000_plat_data smdk2440_dm9k_pdata = {
+        .flags          = (DM9000_PLATF_16BITONLY | DM9000_PLATF_NO_EEPROM),
+};
+
+static struct platform_device smdk2440_device_eth = {
+        .name           = "dm9000",
+        .id             = -1,
+        .num_resources  = ARRAY_SIZE(smdk2440_dm9k_resource),
+        .resource       = smdk2440_dm9k_resource,
+        .dev            = {
+                .platform_data  = &smdk2440_dm9k_pdata,
+        },
+};
+
+static struct platform_device *smdk2440_devices[] __initdata = {
+	&smdk2440_device_eth,
+};
+```
+
+
+
 ### yaffs2
+
+### nfs
+
+当dm9000支持后，nfs才支持
+
+```bash
+set bootargs noinitrd root=/dev/nfs nfsroot=192.168.10.119:/work/rootfs  ip=192.168.10.123:192.168.10.119:192.168.10.1:255.255.255.0::eth0:off init=/linuxrc console=ttySAC0,115200
+```
+
+启动后：
+
+```bash
+[    0.653781] dm9000 dm9000 eth0: link down
+[    1.191493] dm9000 dm9000 eth0: link up, 100Mbps, full-duplex, lpa 0xCDE1
+[    1.193358] IP-Config: Complete:
+[    1.195883]      device=eth0, hwaddr=00:0c:29:45:c4:c3, ipaddr=192.168.10.123, mask=255.255.255.0, gw=192.168.10.1
+[    1.206268]      host=192.168.10.123, domain=, nis-domain=(none)
+[    1.212160]      bootserver=192.168.10.119, rootserver=192.168.10.119, rootpath=
+[    1.219450] ALSA device list:
+[    1.222424]   No soundcards found.
+[    1.232574] VFS: Mounted root (nfs filesystem) readonly on device 0:9.
+[    1.169073] Freeing unused kernel memory: 144K (c0495000 - c04b9000)
+
+Please press Enter to activate this console.
+```
 
 
 
@@ -497,7 +561,7 @@ nfsroot 指定了服务器的 IP 和根文件系统在服务器的路径， ip �
 sudo vi /etc/exports 
 
 ```bash
-/home/flinn/smart210-SDK/rootfs *(rw,sync,no_root_squash)
+/home/flinn/smart210-SDK/rootfs *(rw,sync,no_root_squash，no_subtree_check )
 ```
 
 重启nfs
