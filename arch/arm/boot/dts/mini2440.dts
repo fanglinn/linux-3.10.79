@@ -33,6 +33,13 @@
 		reg =  <0x30000000 0x4000000>;
 	};
 
+	xti-clock {
+		compatible = "fixed-clock";
+		clock-frequency = <12000000>;
+		clock-output-names = "xti";
+		#clock-cells = <0>;
+	};
+
 	chosen {
 		bootargs = "noinitrd root=/dev/nfs nfsroot=192.168.10.119:/work/rootfs ip=192.168.10.123:192.168.10.119:192.168.10.1:255.255.255.0::eth0:off init=/linuxrc console=ttySAC0,115200/proc/device-tree/chosen";
 	};
