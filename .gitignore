@@ -18,6 +18,8 @@ kernel/bounds.s
 scripts/mod/devicetable-offsets.s
 vmlinux
 
+*.tmp
+
 =======
 .tmp_vmlinux1
 .tmp_vmlinux2

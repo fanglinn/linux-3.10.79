@@ -381,16 +381,26 @@ MACHINE_START(SMDK4212, "SMDK4212")
 	.reserve	= &smdk4x12_reserve,
 MACHINE_END
 
+// add by Flinn for tiny4412
+static const char * const tiny4412_dt_match[] = {
+        "samsung,smdk4412",
+        "samsung,exynos4412",
+        NULL
+};
+
 MACHINE_START(SMDK4412, "SMDK4412")
 	/* Maintainer: Kukjin Kim <kgene.kim@samsung.com> */
 	/* Maintainer: Changhwan Youn <chaos.youn@samsung.com> */
-	.atag_offset	= 0x100,
+	//.atag_offset	= 0x100,
 	.smp		= smp_ops(exynos_smp_ops),
 	.init_irq	= exynos4_init_irq,
 	.map_io		= smdk4x12_map_io,
 	.init_machine	= smdk4x12_machine_init,
 	.init_late	= exynos_init_late,
 	.init_time	= exynos_init_time,
+	.dt_compat	= tiny4412_dt_match,
 	.restart	= exynos4_restart,
 	.reserve	= &smdk4x12_reserve,
 MACHINE_END
+
+
